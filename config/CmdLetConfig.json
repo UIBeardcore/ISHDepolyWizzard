@@ -1,0 +1,15 @@
+{
+    "CmdLets": {
+        "Clear-ISHDeploymentHistory": { "fields": []},
+
+        "Reset-ISHSTS": { "fields": []},
+    
+        "Undo-ISHDeployment": { "fields": []},
+
+        "Enable-ISHExternalPreview": { "fields": []},
+        "Disable-ISHExternalPreview": { "fields": []},
+
+        "Enable-ISHUIContentEditor": { "fields": []},
+        "Disable-ISHUIContentEditor": { "fields": []}
+    }
+}
