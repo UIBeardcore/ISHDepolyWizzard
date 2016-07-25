@@ -3,8 +3,13 @@
 const electron = require('electron')
 // Module to control application life.
 const app = electron.app
+const ipcMain = electron.ipcMain
+const dialog = electron.dialog; 
+
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow
+
+const FS = require('fs');
 
 require('electron-reload')(__dirname);
 
@@ -18,7 +23,7 @@ function createWindow () {
     width: 600, 
     height: 600,
     center: true,
-    //resizable: false,
+    resizable: false,
     title: "ISHDeploy SandBox"
   })
 
@@ -26,10 +31,10 @@ function createWindow () {
   mainWindow.loadURL(`file://${__dirname}/index.html`)
 
   // Disable menu bar
-  //mainWindow.setMenu(null);
+  mainWindow.setMenu(null);
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools()
+  //mainWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
@@ -38,6 +43,46 @@ function createWindow () {
     // when you should delete the corresponding element.
     mainWindow = null
   })
+
+  // Emitted when required event is fired
+  ipcMain.on('powershell-script-save', (event, arg) => {
+
+    const fileName = 'ish-wizzard'
+
+    //console.log("event -"  + event);
+    //console.log("arg -"  + arg);
+
+    let filecontent = arg;
+
+    //console.log("content before -"  + filecontent);
+
+    dialog.showSaveDialog(
+        (fileName) => {
+
+          console.log("content -"  + filecontent);
+
+          if (fileName === undefined)
+            return;
+
+          FS.writeFile(
+            fileName, 
+            filecontent, 
+            (err) => {   
+                if (!err) 
+                {
+                  dialog.showMessageBox({ message: "The file has been saved.", buttons: ["OK"] });
+                } 
+                else 
+                {
+                  dialog.showErrorBox("File Save Error", err.message);
+                }
+            });
+        }
+      ); 
+
+    //console.log(arg);  // prints "ping"
+    //event.sender.send('powershell-script-save', 'pong');
+  });
 }
 
 // This method will be called when Electron has finished

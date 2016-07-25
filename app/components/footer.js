@@ -8,9 +8,6 @@ export default class Footer extends React.Component {
     constructor(props) {
      super(props);
 
-     this.state = {
-            deployment: ''
-        };
     }
 
     handleClick(event) {
@@ -18,18 +15,19 @@ export default class Footer extends React.Component {
     }
 
     handleDeploymentChange(event) {
-        this.setState({deployment: event.target.value}); 
+
+        let deployment = event.target.value.trim();
+        if (!deployment) {
+            return;
+        }
+
+        this.props.onChange(deployment); 
     }    
 
     handleSubmit(event) {
         event.preventDefault();
-
-        var deployment = this.state.deployment.trim();
-        if (!deployment) {
-            return;
-        }
-        
-        this.props.onGenerate(deployment);
+      
+        this.props.onGenerate();
     }    
 
     render(){

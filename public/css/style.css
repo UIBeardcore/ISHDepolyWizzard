@@ -48,10 +48,10 @@ footer > .row{
 
 .overlay > button
 {
-    margin-top: 15px;
+    margin: 15px 50px;
 }
 
 .ReactCodeMirror .CodeMirror
 {
-  height: auto;
+  height: 420px;
 }

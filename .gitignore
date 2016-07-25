@@ -1,2 +1,4 @@
 node_modules
+distrib
 .vscode
+npm-debug.*

@@ -1,9 +1,9 @@
 // ES6 Component
 // Import React and ReactDOM
-import FS from 'fs';
-
 import React from 'react';
 import ReactDOM from 'react-dom';
+
+//import {ipcRenderer} from 'electron';
 
 // Import Search Component
 import Header from '../components/Header';
@@ -20,6 +20,8 @@ import CmdLet from '../components/CmdLet';
 // Import Details Component
 import CallInfo from '../components/CallInfo';
 
+const {ipcRenderer} = window.require('electron');
+
 // Component Class
 export default class Index extends React.Component {
 
@@ -27,6 +29,8 @@ export default class Index extends React.Component {
         super(props);
 
         const {CmdLets} = require('../../config/CmdLetConfig.json');
+
+        //const {ipcRenderer} = require('electron');
 
         const titles = Object.keys(CmdLets);//.map(item => item.name);
 
@@ -72,7 +76,13 @@ export default class Index extends React.Component {
     onGenerateClick(deploymentName)
     {
         this.setState({
-            isGenerateHidden : false,
+            isGenerateHidden : false
+        })
+    }
+
+    handleDeploymentChange(deploymentName)
+    {
+        this.setState({
             deployment: deploymentName
         })
     }
@@ -83,6 +93,11 @@ export default class Index extends React.Component {
             isGenerateHidden : true
         })
     }    
+
+    onInfoDownload(psContent)
+    {
+        ipcRenderer.send('powershell-script-save', psContent);
+    }        
   
     render() {
         return (
@@ -91,10 +106,11 @@ export default class Index extends React.Component {
                 userName="testUser"
                 computerName="WIN-BCMCO6U3OI4" 
                 onSubmit={this.onInfoClose.bind(this)}
+                onSave={this.onInfoDownload.bind(this)}
                 isHidden={this.state.isGenerateHidden} deployment={this.state.deployment} list={this.state.listSelectedTitles}/>
             <Header title={this.state.title}/>
             <Commandlets list={this.state.list} listSelected={this.state.listSelectedTitles} onRemoveSelection={this.onRemoveSelection.bind(this)}/>
-            <Footer onGenerate={this.onGenerateClick.bind(this)}/>
+            <Footer onChange={this.handleDeploymentChange.bind(this)} onGenerate={this.onGenerateClick.bind(this)}/>
           </div>
         );
     }

@@ -4,9 +4,7 @@
 import React from 'react';
 
 // Import CodeMirror
-import Codemirror from 'react-codemirror';
-
-require('codemirror/mode/powershell/powershell');
+import PSEditor from './pseditor';
 
 export default class CallInfo extends React.Component {
 
@@ -25,7 +23,7 @@ export default class CallInfo extends React.Component {
 
     }
 
-     getGeneratedCode(userName, computerName) {
+     getGeneratedCode() {
          return `try
 {
     $userId = "${this.props.userName}"
@@ -45,12 +43,17 @@ finally
      `;
    }
 
-
     handleSubmit(event) {
         event.preventDefault();
 
         this.props.onSubmit();
     }    
+
+    handleSave(event) {
+        event.preventDefault();
+
+        this.props.onSave(this.state.code);
+    }        
 
     updateCode(newCode) 
     {
@@ -59,18 +62,22 @@ finally
         });
     }
 
+
+    // UGLY UGLY UGLY CODE!
+    // VERY UGLY
+    componentWillReceiveProps(nextProps) {
+        this.setState({
+            code: this.getGeneratedCode()
+        });
+    }        
+
     render(){
-
-        const options = {
-            //lineNumbers: true,
-            height: "500px",
-            mode:  "powershell"
-        };
-
+        //const generatedCode = this.getGeneratedCode();
         return(
             <form className={"overlay" + (this.props.isHidden ? " hidden" : "")} onSubmit={this.handleSubmit.bind(this)}>
-                <Codemirror value={this.getGeneratedCode()} onChange={this.updateCode} options={options} />
-                <button type="submit" className="btn btn-info center-block">Close</button>
+                <PSEditor value={this.state.code} onChange={this.updateCode.bind(this)} />
+                <button type="submit" className="btn btn-info center-block pull-left">Close</button>
+                <button type="button" className="btn btn-success center-block pull-right" onClick={this.handleSave.bind(this)}>Save</button>
             </form>
         )
     }
